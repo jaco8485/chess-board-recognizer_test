@@ -1,7 +1,5 @@
 # chess_board_recognizer
 
-A short description of the project.
-
 ## Project Description
 
 
