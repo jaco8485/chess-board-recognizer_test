@@ -77,3 +77,95 @@ The directory structure of the project looks like this:
 Created using [mlops_template](https://github.com/SkafteNicki/mlops_template),
 a [cookiecutter template](https://github.com/cookiecutter/cookiecutter) for getting
 started with Machine Learning Operations (MLOps).
+
+# 📌 Project Checklist  
+
+## ✅ Week 1  
+### 🔹 Git & Environment Setup  
+- [x] **Create a Git repository** (**M5**)  
+- [x] **Ensure all team members have write access** (**M5**)  
+- [x] **Create a dedicated environment to track dependencies** (**M2**)  
+
+### 🔹 Project Structure & Code Initialization  
+- [x] **Generate initial file structure using Cookiecutter** (**M6**)  
+- [x] **Implement `data.py` to download and preprocess necessary data** (**M6**)  
+- [ ] **Implement `model.py` with a basic model and `train.py` for training** (**M6**)  
+- [ ] **Fill `requirements.txt` and `requirements_dev.txt` with dependencies** (**M2+M6**)  
+
+### 🔹 Code Quality & Version Control  
+- [ ] **Follow PEP8 coding standards** (**M7**)  
+- [ ] **Add type hints and document essential parts of the code** (**M7**)  
+- [ ] **Setup version control for data** (**M8**)  
+
+### 🔹 CLI & Docker Setup  
+- [ ] **Add CLI commands where applicable** (**M9**)  
+- [ ] **Create Dockerfiles for your code** (**M10**)  
+- [ ] **Build and test Dockerfiles locally** (**M10**)  
+
+### 🔹 Configuration & Optimization  
+- [ ] **Write configuration files for experiments** (**M11**)  
+- [ ] **Use Hydra for managing hyperparameters** (**M11**)  
+- [ ] **Profile code for optimization** (**M12**)  
+- [ ] **Add logging for important events** (**M14**)  
+- [ ] **Use Weights & Biases for experiment tracking** (**M14**)  
+- [ ] **Consider running a hyperparameter optimization sweep** (**M14**)  
+- [ ] **Use PyTorch Lightning to reduce boilerplate code** (**M15**)  
+
+---
+
+## ✅ Week 2  
+### 🔹 Testing & CI/CD  
+- [ ] **Write unit tests for data processing** (**M16**)  
+- [ ] **Write unit tests for model construction/training** (**M16**)  
+- [ ] **Measure code coverage** (**M16**)  
+- [ ] **Setup continuous integration on GitHub** (**M17**)  
+- [ ] **Add caching and multi-OS/Python/PyTorch testing** (**M17**)  
+- [ ] **Add a linting step to CI pipeline** (**M17**)  
+- [ ] **Setup pre-commit hooks for version control** (**M18**)  
+
+### 🔹 Automated Workflows  
+- [ ] **Create a workflow that triggers when data changes** (**M19**)  
+- [ ] **Create a workflow for model registry changes** (**M19**)  
+
+### 🔹 Cloud & Deployment Setup  
+- [ ] **Store data in a GCP Bucket and integrate with data version control** (**M21**)  
+- [ ] **Create a workflow for automatic Docker image builds** (**M21**)  
+- [ ] **Train the model on GCP (Engine or Vertex AI)** (**M21**)  
+- [ ] **Develop a FastAPI application for inference** (**M22**)  
+- [ ] **Deploy the model in GCP (Cloud Functions or Cloud Run)** (**M23**)  
+
+### 🔹 API & Performance Testing  
+- [ ] **Write API tests and integrate them into CI/CD** (**M24**)  
+- [ ] **Load test the API** (**M24**)  
+- [ ] **Develop an ML deployment API using ONNX or BentoML** (**M25**)  
+- [ ] **Create a frontend for the API** (**M26**)  
+
+---
+
+## ✅ Week 3  
+### 🔹 Model Robustness & Drift Detection  
+- [ ] **Evaluate model robustness against data drift** (**M27**)  
+- [ ] **Deploy a drift detection API in the cloud** (**M27**)  
+
+### 🔹 Monitoring & Alerting  
+- [ ] **Instrument API with system metrics** (**M28**)  
+- [ ] **Setup cloud monitoring for application** (**M28**)  
+- [ ] **Implement alerting system in GCP** (**M28**)  
+
+### 🔹 Performance Optimization  
+- [ ] **Optimize data loading with distributed processing (if applicable)** (**M29**)  
+- [ ] **Optimize model training with distributed training (if applicable)** (**M30**)  
+- [ ] **Experiment with quantization, pruning, and model compilation for inference speedup** (**M31**)  
+
+---
+
+## 🎯 Extra Tasks  
+- [ ] **Write project documentation** (**M32**)  
+- [ ] **Publish documentation to GitHub Pages** (**M32**)  
+- [ ] **Review project goals and outcomes**  
+- [ ] **Create an architectural diagram of the MLOps pipeline**  
+- [ ] **Ensure all team members understand all project components**  
+- [ ] **Upload all final code to GitHub**  
+
+
+
