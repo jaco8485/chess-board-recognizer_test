@@ -177,5 +177,4 @@ cython_debug/
 #.idea/
 
 # Data folder
-data/processed
-data/raw
+data/
