@@ -1,0 +1,6 @@
+hyperparameters:
+  model: "CNN"
+  batch_size: 32
+  lr: 1e-4
+  epochs: 25
+  optimizer: "adam"
