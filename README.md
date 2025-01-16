@@ -99,8 +99,8 @@ started with Machine Learning Operations (MLOps).
 
 ### 🔹 CLI & Docker Setup  
 - [ ] **Add CLI commands where applicable** (**M9**)  
-- [ ] **Create Dockerfiles for your code** (**M10**)  
-- [ ] **Build and test Dockerfiles locally** (**M10**)  
+- [x] **Create Dockerfiles for your code** (**M10**)  
+- [x] **Build and test Dockerfiles locally** (**M10**)  
 
 ### 🔹 Configuration & Optimization  
 - [ ] **Write configuration files for experiments** (**M11**)  
