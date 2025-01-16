@@ -4,7 +4,7 @@ import torch.nn.functional as f
 piece = {"P": 1, "R": 2, "B": 3, "N": 4, "Q": 5, "K": 6, "p": 7, "r": 8, "b": 9, "n": 10, "q": 11, "k": 12}
 
 
-def to_fen_notation(fen_string: str):
+def from_fen_notation(fen_string: str):
     board = torch.zeros((8, 8, 13))
 
     fen_rows = fen_string.split("-")

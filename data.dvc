@@ -1,0 +1,18 @@
+outs:
+- hash: md5
+  path: data
+  files:
+  - relpath: processed/testing.txt
+    md5: 2eeecd72c567401e6988624b179d0b14
+    size: 3
+    cloud:
+      remote_storage:
+        etag: 08e28b9986a4fa8a031001
+        version_id: '1737031890126306'
+  - relpath: raw/testing2.txt
+    md5: d41d8cd98f00b204e9800998ecf8427e
+    size: 0
+    cloud:
+      remote_storage:
+        etag: 08b6daa286a4fa8a031001
+        version_id: '1737031890283830'

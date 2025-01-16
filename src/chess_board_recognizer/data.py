@@ -7,9 +7,9 @@ import shutil
 import logging
 import glob
 import os
-from utils import to_fen_notation
-import torchvision.transforms as transforms
 from PIL import Image
+from chess_board_recognizer.utils import from_fen_notation
+import torchvision.transforms as transforms
 
 DATASET_URL = "https://www.kaggle.com/api/v1/datasets/download/koryakinp/chess-positions"
 
@@ -58,7 +58,7 @@ class ChessPositionsDataset(Dataset):
     def __getitem__(self, index: int):
         image = Image.open(self.data_paths[index])
         image = self.transform(image)
-        fen_notation = to_fen_notation(Path(self.data_paths[index]).name.replace(".jpeg", ""))
+        fen_notation = from_fen_notation(Path(self.data_paths[index]).name.replace(".jpeg", ""))
         return image, fen_notation
 
 
