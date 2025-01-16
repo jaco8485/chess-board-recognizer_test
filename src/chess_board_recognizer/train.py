@@ -8,6 +8,7 @@ from loguru import logger
 import time
 import datetime
 from utils import board_accuracy
+from tqdm import tqdm
 
 
 def train(model, dataloader, optimizer, cfg):
@@ -21,7 +22,7 @@ def train(model, dataloader, optimizer, cfg):
         running_loss = 0.0
         board_acc = 0.0
 
-        for inputs, labels in dataloader:
+        for inputs, labels in tqdm(dataloader):
             inputs, labels = inputs.to(device), labels.to(device)
 
             optimizer.zero_grad()
@@ -65,7 +66,9 @@ def main(cfg):
 
     chess_dataset = ChessPositionsDataset("data/", transform=transform)
 
-    train_loader = DataLoader(chess_dataset, cfg.hyperparameters.batch_size, shuffle=True)
+    train_loader = DataLoader(
+        chess_dataset, cfg.hyperparameters.batch_size, shuffle=True, num_workers=cfg.hyperparameters.num_workers
+    )
 
     train(model, train_loader, optimizer, cfg)
 
