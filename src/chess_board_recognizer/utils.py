@@ -6,16 +6,18 @@ piece = {"P": 1, "R": 2, "B": 3, "N": 4, "Q": 5, "K": 6, "p": 7, "r": 8, "b": 9,
 
 def from_fen_notation(fen_string: str):
     board = torch.zeros((8, 8, 13))
-
     fen_rows = fen_string.split("-")
 
     for i, fen_row in enumerate(fen_rows):
         n = 0
         for char in fen_row:
             if str.isdigit(char):
+                for j in range(int(char)):
+                    board[i,n+j] = f.one_hot(torch.tensor(0), 13)
                 n += int(char)
             else:
                 board[i, n] = f.one_hot(torch.tensor(piece[char]), 13)
+                n+=1
 
     return board
 
