@@ -99,8 +99,8 @@ started with Machine Learning Operations (MLOps).
 
 ### 🔹 CLI & Docker Setup  
 - [ ] **Add CLI commands where applicable** (**M9**)  
-- [ ] **Create Dockerfiles for your code** (**M10**)  
-- [ ] **Build and test Dockerfiles locally** (**M10**)  
+- [x] **Create Dockerfiles for your code** (**M10**)  
+- [x] **Build and test Dockerfiles locally** (**M10**)  
 
 ### 🔹 Configuration & Optimization  
 - [ ] **Write configuration files for experiments** (**M11**)  
@@ -129,7 +129,7 @@ started with Machine Learning Operations (MLOps).
 
 ### 🔹 Cloud & Deployment Setup  
 - [ ] **Store data in a GCP Bucket and integrate with data version control** (**M21**)  
-- [ ] **Create a workflow for automatic Docker image builds** (**M21**)  
+- [x] **Create a workflow for automatic Docker image builds** (**M21**)  
 - [ ] **Train the model on GCP (Engine or Vertex AI)** (**M21**)  
 - [ ] **Develop a FastAPI application for inference** (**M22**)  
 - [ ] **Deploy the model in GCP (Cloud Functions or Cloud Run)** (**M23**)  

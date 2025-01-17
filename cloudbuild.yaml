@@ -1,0 +1,41 @@
+# API image
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'Build API image'
+  args: [
+    'build',
+    '-t',
+    'europe-west1-docker.pkg.dev/$PROJECT_ID/docker-repo/chess-api:latest',
+    '-f',
+    'dockerfiles/api.dockerfile',
+    '.'
+  ]
+
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'Push API image'
+  args: [
+    'push',
+    'europe-west1-docker.pkg.dev/$PROJECT_ID/docker-repo/chess-api:latest'
+  ]
+
+# Training image
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'Build Training image'
+  args: [
+    'build',
+    '-t',
+    'europe-west1-docker.pkg.dev/$PROJECT_ID/docker-repo/chess-train:latest',
+    '-f',
+    'dockerfiles/train.dockerfile',
+    '.'
+  ]
+
+- name: 'gcr.io/cloud-builders/docker'
+  id: 'Push Training image'
+  args: [
+    'push',
+    'europe-west1-docker.pkg.dev/$PROJECT_ID/docker-repo/chess-train:latest'
+  ]
+
+options:
+  logging: CLOUD_LOGGING_ONLY
