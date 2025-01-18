@@ -1,9 +1,7 @@
 from pathlib import Path
-from urllib.request import urlretrieve
 import typer
 from torch.utils.data import Dataset
 import zipfile
-import shutil
 from loguru import logger
 import glob
 import os
@@ -21,17 +19,16 @@ class ChessPositionsDataset(Dataset):
     Will download the dataset to specified folder if it doesnt exist there.
     """
 
-    def __init__(self, data_path : str = "data", transform: transforms.Compose = None, type: str = "train") -> None:
+    def __init__(self, data_path: str = "data", transform: transforms.Compose = None, type: str = "train") -> None:
         self.data_path = Path(data_path)
         self.transform = transform
 
         if not self.__is_dataset_ready__():
-            
             logger.info("Preparing ChessPositionsDataset")
-            
-            if not Path.exists(self.data_path/"data.zip"):
-                logger.error(str(self.data_path/"data.zip") + " cannot be found")
-                raise Exception(str(self.data_path/"data.zip") + " cannot be found")
+
+            if not Path.exists(self.data_path / "data.zip"):
+                logger.error(str(self.data_path / "data.zip") + " cannot be found")
+                raise Exception(str(self.data_path / "data.zip") + " cannot be found")
 
             logger.info("Unpacking dataset")
 
@@ -51,11 +48,11 @@ class ChessPositionsDataset(Dataset):
 
     def __getitem__(self, index: int):
         image = Image.open(self.data_paths[index])
-        if self.transform != None:
+        if self.transform is not None:
             image = self.transform(image)
         fen_notation = from_fen_notation(Path(self.data_paths[index]).name.replace(".jpeg", ""))
         return image, fen_notation
-    
+
     def __is_dataset_ready__(self):
         return Path.exists(self.data_path / "train") and Path.exists(self.data_path / "test")
 
@@ -67,7 +64,7 @@ def main(data_path: Path):
         ]
     )
 
-    ChessPositionsDataset(transform,data_path=data_path)
+    ChessPositionsDataset(transform, data_path=data_path)
 
 
 if __name__ == "__main__":
