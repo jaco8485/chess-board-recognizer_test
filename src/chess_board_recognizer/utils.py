@@ -20,7 +20,7 @@ piece_description = {
 }
 
 
-def from_fen_notation(fen_string: str):
+def from_fen_notation(fen_string: str) -> torch.Tensor:
     board = torch.zeros((8, 8, 13))
     fen_rows = fen_string.split("-")
 
@@ -62,7 +62,7 @@ def per_piece_accuracy(predicted_board: torch.Tensor, true_board: torch.Tensor, 
     return accuracy_table
 
 
-def draw_chessboard(board: torch.Tensor, save_path: str):
+def draw_chessboard(board: torch.Tensor, save_path: str = "") -> Image:
     chessboard = board
     square_size = 50
     board_size = square_size * 8
@@ -88,5 +88,7 @@ def draw_chessboard(board: torch.Tensor, save_path: str):
             if piece != 0:
                 board_image.paste(piece_images[piece], (col * square_size, row * square_size), piece_images[piece])
 
-    board_image.save(save_path)
-    board_image.show()
+    if save_path != "":
+        board_image.save(save_path)
+        
+    return board_image

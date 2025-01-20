@@ -43,6 +43,7 @@ class ChessPositionsDataset(Dataset):
 
         self.data_paths = glob.glob(str(self.data_path / type / "*"))
 
+        self.data_paths = self.data_paths
     def __len__(self) -> int:
         return len(self.data_paths)
 
@@ -57,14 +58,14 @@ class ChessPositionsDataset(Dataset):
         return Path.exists(self.data_path / "train") and Path.exists(self.data_path / "test")
 
 
-def main(data_path: Path):
+def main(data_path: str):
     transform = transforms.Compose(
         [
             transforms.ToTensor(),
         ]
     )
 
-    ChessPositionsDataset(transform, data_path=data_path)
+    ChessPositionsDataset(data_path=data_path,transform=transform)
 
 
 if __name__ == "__main__":
