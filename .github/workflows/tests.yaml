@@ -6,8 +6,7 @@ on:
       - Unit_Test
 
 jobs:
-  test:
-    needs: create-dataset  # Wait for the dataset creation job to complete
+  test_setup:
     runs-on: ${{ matrix.operating-system }}
     strategy:
       matrix:
@@ -36,6 +35,15 @@ jobs:
           pip install torchvision
           pip list
 
+  test_run:
+    needs: create-dataset  # Wait for the dataset creation job to complete
+    runs-on: ${{ matrix.operating-system }}
+    strategy:
+      matrix:
+        operating-system: ["windows-latest"]
+        python-version: ["3.11"]
+
+    steps:
       - name: Download dataset artifact
         uses: actions/download-artifact@v4
         with:
