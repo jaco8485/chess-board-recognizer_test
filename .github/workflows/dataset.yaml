@@ -25,7 +25,7 @@ jobs:
           dvc pull
 
       - name: Upload dataset artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: permanent-dataset
           path: ./data
