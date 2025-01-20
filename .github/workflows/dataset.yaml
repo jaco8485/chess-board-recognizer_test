@@ -1,10 +1,7 @@
 name: Data Artifact
 
 on:
-  push:
-    branches:
-      - Unit_Test  
-#workflow_dispatch:  # Trigger manually when needed
+  workflow_dispatch:  # Trigger manually when needed
 
 jobs:
   create-artifact:
