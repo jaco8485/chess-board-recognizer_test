@@ -6,7 +6,7 @@ from loguru import logger
 import glob
 import os
 from PIL import Image
-from utils import from_fen_notation
+from src.chess_board_recognizer.utils import from_fen_notation
 import torchvision.transforms as transforms
 
 DATASET_URL = "https://www.kaggle.com/api/v1/datasets/download/koryakinp/chess-positions"
