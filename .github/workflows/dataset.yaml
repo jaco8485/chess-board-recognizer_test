@@ -3,7 +3,7 @@ name: Data Artifact
 on:
   push:
     branches:
-      - Unit_Test
+      - main
 
 jobs:
   create-artifact:

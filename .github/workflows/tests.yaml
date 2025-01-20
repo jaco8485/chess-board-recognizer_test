@@ -62,7 +62,6 @@ jobs:
           pip list
 
   test_run:
-    needs: create-dataset  # Wait for the dataset creation job to complete
     runs-on: ${{ matrix.operating-system }}
     strategy:
       matrix:
