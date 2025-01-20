@@ -1,14 +1,16 @@
 name: Data Artifact
 
 on:
-  workflow_dispatch:  # Trigger manually when needed
+  push:
+    branches:
+      - Unit_Test
 
 jobs:
   create-artifact:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python environment
         uses: actions/setup-python@v4
