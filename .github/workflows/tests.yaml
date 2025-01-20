@@ -6,6 +6,32 @@ on:
       - Unit_Test
 
 jobs:
+  create-artifact:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
+
+      - name: Install DVC
+        run: |
+          pip install dvc
+          pip install dvc-gs
+
+      - name: Pull DVC-tracked dataset
+        run: |
+          dvc pull
+
+      - name: Upload dataset artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: permanent-dataset
+          path: ./data
+
   test_setup:
     runs-on: ${{ matrix.operating-system }}
     strategy:
