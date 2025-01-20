@@ -2,12 +2,12 @@ import torch
 import hydra
 from torch.utils.data import DataLoader
 from data import ChessPositionsDataset
-from model import CNNModel
+from chess_board_recognizer.model import CNNModel
 import torchvision.transforms as transforms
 from loguru import logger
 import time
 import datetime
-from utils import board_accuracy
+from chess_board_recognizer.utils import board_accuracy
 from tqdm import tqdm
 
 

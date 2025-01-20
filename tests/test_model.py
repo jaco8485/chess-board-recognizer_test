@@ -1,5 +1,5 @@
 import pytest
-from chess_board_recognizer.model import CNNModel
+from src.chess_board_recognizer.model import CNNModel
 import torch
 
 
