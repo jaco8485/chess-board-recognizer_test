@@ -16,7 +16,7 @@ jobs:
       - name: Download and prepare dataset
         run: |
           mkdir -p ./data
-          curl -o ./data/dataset.zip <your-dataset-url>
+          curl -o ./data/dataset.zip mlops_group_10
           unzip ./data/dataset.zip -d ./data
 
       - name: Upload dataset artifact
