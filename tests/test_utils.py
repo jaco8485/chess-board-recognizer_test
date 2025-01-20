@@ -1,6 +1,6 @@
 import pytest
 import torch
-import chess_board_recognizer.utils as utils
+import src.chess_board_recognizer.utils as utils
 
 
 def test_from_fen_notation_full_borad():
