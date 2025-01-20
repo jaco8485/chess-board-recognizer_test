@@ -89,11 +89,11 @@ started with Machine Learning Operations (MLOps).
 ### 🔹 Project Structure & Code Initialization  
 - [x] **Generate initial file structure using Cookiecutter** (**M6**)  
 - [x] **Implement `data.py` to download and preprocess necessary data** (**M6**)  
-- [ ] **Implement `model.py` with a basic model and `train.py` for training** (**M6**)  
-- [ ] **Fill `requirements.txt` and `requirements_dev.txt` with dependencies** (**M2+M6**)  
+- [x] **Implement `model.py` with a basic model and `train.py` for training** (**M6**)  
+- [x] **Fill `requirements.txt` and `requirements_dev.txt` with dependencies** (**M2+M6**)  
 
 ### 🔹 Code Quality & Version Control  
-- [ ] **Follow PEP8 coding standards** (**M7**)  
+- [x] **Follow PEP8 coding standards** (**M7**)  
 - [ ] **Add type hints and document essential parts of the code** (**M7**)  
 - [ ] **Setup version control for data** (**M8**)  
 
@@ -103,13 +103,13 @@ started with Machine Learning Operations (MLOps).
 - [x] **Build and test Dockerfiles locally** (**M10**)  
 
 ### 🔹 Configuration & Optimization  
-- [ ] **Write configuration files for experiments** (**M11**)  
-- [ ] **Use Hydra for managing hyperparameters** (**M11**)  
+- [x] **Write configuration files for experiments** (**M11**)  
+- [x] **Use Hydra for managing hyperparameters** (**M11**)  
 - [ ] **Profile code for optimization** (**M12**)  
-- [ ] **Add logging for important events** (**M14**)  
+- [x] **Add logging for important events** (**M14**)  
 - [ ] **Use Weights & Biases for experiment tracking** (**M14**)  
 - [ ] **Consider running a hyperparameter optimization sweep** (**M14**)  
-- [ ] **Use PyTorch Lightning to reduce boilerplate code** (**M15**)  
+- ~~[ ] **Use PyTorch Lightning to reduce boilerplate code** (**M15**)~~
 
 ---
 

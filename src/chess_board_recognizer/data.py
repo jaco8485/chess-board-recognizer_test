@@ -1,10 +1,8 @@
 from pathlib import Path
-from urllib.request import urlretrieve
 import typer
 from torch.utils.data import Dataset
 import zipfile
-import shutil
-import logging
+from loguru import logger
 import glob
 import os
 from PIL import Image
@@ -21,34 +19,27 @@ class ChessPositionsDataset(Dataset):
     Will download the dataset to specified folder if it doesnt exist there.
     """
 
-    def __init__(self, raw_data_path: str, transform: transforms.Compose, type: str = "train") -> None:
-        self.data_path = Path(raw_data_path)
+    def __init__(self, data_path: str = "data", transform: transforms.Compose = None, type: str = "train") -> None:
+        self.data_path = Path(data_path)
         self.transform = transform
 
-        if not Path.exists(self.data_path):
-            logging.getLogger(__name__).log(logging.INFO, "Dataset not found, downloading it instead.")
+        if not self.__is_dataset_ready__():
+            logger.info("Preparing ChessPositionsDataset")
 
-            Path.mkdir(self.data_path, parents=True)
+            if not Path.exists(self.data_path / "data.zip"):
+                logger.error(str(self.data_path / "data.zip") + " cannot be found")
+                raise Exception(str(self.data_path / "data.zip") + " cannot be found")
 
-            urlretrieve(DATASET_URL, self.data_path / "data.zip")
-
-            logging.getLogger(__name__).log(logging.INFO, "Upacking data.zip")
+            logger.info("Unpacking dataset")
 
             with zipfile.ZipFile(self.data_path / "data.zip", "r") as zip_ref:
                 zip_ref.extractall(self.data_path)
 
-            logging.getLogger(__name__).log(logging.INFO, "Cleaning up")
+            logger.info("Cleaning up")
 
-            # The dataset is contained "twiceish" and is being cleaned up.
             os.remove(self.data_path / "data.zip")
-            shutil.rmtree(self.data_path / "train")
-            shutil.rmtree(self.data_path / "test")
 
-            shutil.move((self.data_path / "dataset/train"), (self.data_path / "train"))
-            shutil.move((self.data_path / "dataset/test"), (self.data_path / "test"))
-            shutil.rmtree((self.data_path / "dataset"))
-
-            logging.getLogger(__name__).log(logging.INFO, "Finished downloading dataset")
+            logger.info("Finished downloading dataset")
 
         self.data_paths = glob.glob(str(self.data_path / type / "*"))
 
@@ -57,9 +48,13 @@ class ChessPositionsDataset(Dataset):
 
     def __getitem__(self, index: int):
         image = Image.open(self.data_paths[index])
-        image = self.transform(image)
+        if self.transform is not None:
+            image = self.transform(image)
         fen_notation = from_fen_notation(Path(self.data_paths[index]).name.replace(".jpeg", ""))
         return image, fen_notation
+
+    def __is_dataset_ready__(self):
+        return Path.exists(self.data_path / "train") and Path.exists(self.data_path / "test")
 
 
 def main(data_path: Path):
@@ -69,7 +64,7 @@ def main(data_path: Path):
         ]
     )
 
-    ChessPositionsDataset(data_path, transform)
+    ChessPositionsDataset(transform, data_path=data_path)
 
 
 if __name__ == "__main__":
