@@ -1,4 +1,4 @@
-name: Dataset Artifact
+name: Data Artifact
 
 on:
   workflow_dispatch:  # Trigger manually when needed
