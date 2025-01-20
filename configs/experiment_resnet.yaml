@@ -1,0 +1,8 @@
+hyperparameters:
+  model: "ResNet"
+  batch_size: 32
+  lr: 1e-4
+  epochs: 10
+  optimizer: "adam"
+
+  num_workers: 12

@@ -95,10 +95,10 @@ started with Machine Learning Operations (MLOps).
 ### 🔹 Code Quality & Version Control  
 - [x] **Follow PEP8 coding standards** (**M7**)  
 - [ ] **Add type hints and document essential parts of the code** (**M7**)  
-- [ ] **Setup version control for data** (**M8**)  
+- [x] **Setup version control for data** (**M8**)  
 
 ### 🔹 CLI & Docker Setup  
-- [ ] **Add CLI commands where applicable** (**M9**)  
+- [x] **Add CLI commands where applicable** (**M9**)  
 - [x] **Create Dockerfiles for your code** (**M10**)  
 - [x] **Build and test Dockerfiles locally** (**M10**)  
 
@@ -107,7 +107,7 @@ started with Machine Learning Operations (MLOps).
 - [x] **Use Hydra for managing hyperparameters** (**M11**)  
 - [ ] **Profile code for optimization** (**M12**)  
 - [x] **Add logging for important events** (**M14**)  
-- [ ] **Use Weights & Biases for experiment tracking** (**M14**)  
+- [x] **Use Weights & Biases for experiment tracking** (**M14**)  
 - [ ] **Consider running a hyperparameter optimization sweep** (**M14**)  
 - ~~[ ] **Use PyTorch Lightning to reduce boilerplate code** (**M15**)~~
 
@@ -115,7 +115,7 @@ started with Machine Learning Operations (MLOps).
 
 ## ✅ Week 2  
 ### 🔹 Testing & CI/CD  
-- [ ] **Write unit tests for data processing** (**M16**)  
+- [x] **Write unit tests for data processing** (**M16**)  
 - [ ] **Write unit tests for model construction/training** (**M16**)  
 - [ ] **Measure code coverage** (**M16**)  
 - [ ] **Setup continuous integration on GitHub** (**M17**)  
@@ -128,7 +128,7 @@ started with Machine Learning Operations (MLOps).
 - [ ] **Create a workflow for model registry changes** (**M19**)  
 
 ### 🔹 Cloud & Deployment Setup  
-- [ ] **Store data in a GCP Bucket and integrate with data version control** (**M21**)  
+- [x] **Store data in a GCP Bucket and integrate with data version control** (**M21**)  
 - [x] **Create a workflow for automatic Docker image builds** (**M21**)  
 - [ ] **Train the model on GCP (Engine or Vertex AI)** (**M21**)  
 - [ ] **Develop a FastAPI application for inference** (**M22**)  
@@ -153,7 +153,7 @@ started with Machine Learning Operations (MLOps).
 - [ ] **Implement alerting system in GCP** (**M28**)  
 
 ### 🔹 Performance Optimization  
-- [ ] **Optimize data loading with distributed processing (if applicable)** (**M29**)  
+- [x] **Optimize data loading with distributed processing (if applicable)** (**M29**)  
 - [ ] **Optimize model training with distributed training (if applicable)** (**M30**)  
 - [ ] **Experiment with quantization, pruning, and model compilation for inference speedup** (**M31**)  
 

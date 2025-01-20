@@ -2,20 +2,30 @@ import torch
 import hydra
 from torch.utils.data import DataLoader
 from data import ChessPositionsDataset
-from chess_board_recognizer.model import CNNModel
+from model import CNNModel, ResNet
 import torchvision.transforms as transforms
 from loguru import logger
 import time
 import datetime
-from utils import board_accuracy
+from utils import board_accuracy, draw_chessboard, per_piece_accuracy
 from tqdm import tqdm
+import timm
+import wandb
 
 
-def train(model, dataloader, optimizer, cfg):
+
+def train(model : torch.nn.Module, dataloader : DataLoader, optimizer : torch.optim.Optimizer, cfg):
     epochs = cfg.hyperparameters.epochs
     loss_fn = torch.nn.CrossEntropyLoss()
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model.to(device)
+    wandb.init(
+        entity="rasmusmkn-danmarks-tekniske-universitet-dtu",
+        project="chess-board-recognizer",
+        config={"lr": cfg.hyperparameters.lr, "batch_size": cfg.hyperparameters.batch_size, "epochs": epochs},
+        name=cfg.hyperparameters.model
+    )
+
 
     for epoch in range(epochs):
         model.train()
@@ -29,10 +39,10 @@ def train(model, dataloader, optimizer, cfg):
 
             outputs = model(inputs)
 
-            preds = outputs.argmax(dim=3)
-            truth = labels.argmax(dim=3)
+            preds = outputs.argmax(dim=-1)
+            truth = labels.argmax(dim=-1)
 
-            board_acc += board_accuracy(preds, truth, preds.shape[0])
+            board_acc += board_accuracy(preds, truth, preds.shape[0]).item()
 
             loss = loss_fn(outputs, labels)
 
@@ -41,32 +51,66 @@ def train(model, dataloader, optimizer, cfg):
 
             running_loss += loss.item()
 
+        sample_image = inputs[0].unsqueeze(0)
+        sample_label = labels[0].argmax(dim=-1)
+        sample_prediction= model(sample_image).argmax(dim=-1)
+        
+        sample_truth_board = draw_chessboard(sample_label)
+        sample_prediction_board = draw_chessboard(model(sample_image).argmax(dim=-1)[0])
+        
         epoch_loss = running_loss / len(dataloader)
+        epoch_accuracy = board_acc / len(dataloader)
         logger.info(
-            f"Epoch {epoch + 1}/{epochs} - Loss: {epoch_loss:.4f} - Accuracy: {board_acc / len(dataloader):.4f}"
+            f"Epoch {epoch + 1}/{epochs} - Loss: {epoch_loss:.4f} - Accuracy: {epoch_accuracy:.4f}"
         )
+        
+        wandb.log({
+                "sample" : {
+                    "image": wandb.Image(sample_image),
+                    "truth": wandb.Image(sample_truth_board),
+                    "prediction": wandb.Image(sample_prediction_board),
+                    "board_accuracy": board_accuracy(sample_prediction,sample_label,1),
+                    "per_piece_accuracy": per_piece_accuracy(sample_prediction,sample_label,1)
+                },
+                "train_loss": loss,
+                "train_accuracy": epoch_accuracy
+        })
+    wandb.finish(0)
 
 
-@hydra.main(version_base=None, config_path="../../configs", config_name="train.yaml")
+@hydra.main(version_base=None, config_path="../../configs", config_name="experiment_cnn.yaml")
 def main(cfg):
-    model = CNNModel()
+    if cfg.hyperparameters.model == "CNN":
+        model = CNNModel()
+        transform = transforms.Compose(
+            [
+                transforms.ToTensor(),
+                transforms.Resize((128, 128)),
+            ]
+        )
+    elif cfg.hyperparameters.model == "ResNet":
+        model = ResNet()
+        transform = transforms.Compose(
+            [
+                transforms.ToTensor(),
+                transforms.Resize((224, 224)),
+            ]
+        )
+    else:
+        logger.error("Invalid network type in configuration. Available Models: CNN, ResNet")
+        raise Exception("Specified network type is invalid")
 
     if cfg.hyperparameters.optimizer == "adam":
         optimizer = torch.optim.Adam(model.parameters())
     else:
         optimizer = torch.optim.SGD(model.parameters())
 
-    transform = transforms.Compose(
-        [
-            transforms.ToTensor(),
-            transforms.Resize((128, 128)),
-        ]
-    )
+
 
     chess_dataset = ChessPositionsDataset("data/", transform=transform)
 
     train_loader = DataLoader(
-        chess_dataset, cfg.hyperparameters.batch_size, shuffle=True, num_workers=cfg.hyperparameters.num_workers
+        chess_dataset, cfg.hyperparameters.batch_size, shuffle=True, num_workers=cfg.hyperparameters.num_workers, persistent_workers=True
     )
 
     train(model, train_loader, optimizer, cfg)

@@ -35,7 +35,7 @@ def main(model_path: Path, image_path: Path):
     for name, acc in piece_acc.items():
         logger.info(f"\t{name}: {acc.item() * 100:.2f}%")
 
-    draw_chessboard(prediction, "chessboard.png")
+    draw_chessboard(prediction, "chessboard.png").show()
 
 
 if __name__ == "__main__":

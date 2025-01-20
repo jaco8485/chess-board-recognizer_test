@@ -184,3 +184,6 @@ outputs/
 
 # Model Outputs
 models/
+
+# W&B Files
+wandb/
