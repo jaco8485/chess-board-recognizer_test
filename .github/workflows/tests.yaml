@@ -7,6 +7,9 @@ on:
 
 jobs:
   test:
+    env:
+      DATA_SOURCE: artifact
+
     runs-on: ${{ matrix.operating-system }}
     strategy:
       matrix:
