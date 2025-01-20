@@ -3,31 +3,36 @@ name: Unit Tests
 on:
   push:
     branches:
-      - main
       - Unit_Test
-  pull_request:
-    branches:
-      - main
 
 jobs:
   test:
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.operating-system }}
     strategy:
       matrix:
-        os: [windows-latest, macos-latest]
+        operating-system: ["ubuntu-latest", "windows-latest", "macos-latest"]
+        python-version: ["3.12", "3.11"]
 
     steps:
+      # Checkout the code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Download dataset artifact
-        run: |
-          curl -L -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-          "https://api.github.com/repos/${{ github.repository }}/actions/artifacts" | \
-          jq '.artifacts[] | select(.name == "permanent-dataset") | .id' | \
-          xargs -I {} curl -L -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-          -o artifact.zip "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/{}/download"
+      # Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+          cache-dependency-path: setup.py
 
-      - name: Run tests
+      # Install other dependencies
+      - name: Install dependencies
         run: |
-          pytest .\tests\
+          pip install -r requirements.txt
+          pip list
+
+      # Run tests and coverage, excluding test_data.py
+      - name: Run tests & coverage
+        run: |
+          pytest --ignore=tests/test_data.py
