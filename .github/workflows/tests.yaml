@@ -5,13 +5,7 @@ on:
     workflows: ["Data Artifact"]
     types:
       - completed
-  # push:
-  #   branches:
-  #     - main
-  #     - Unit_Test
-  # pull_request:
-  #   branches:
-  #     - main
+
 
 jobs:
   test:
