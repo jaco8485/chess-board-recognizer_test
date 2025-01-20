@@ -7,23 +7,23 @@ import torchvision.transforms as transforms
 from loguru import logger
 import time
 import datetime
-from utils import board_accuracy, draw_chessboard
+from utils import board_accuracy, draw_chessboard, per_piece_accuracy
 from tqdm import tqdm
 import timm
 import wandb
 
 
 
-def train(model, dataloader, optimizer, cfg):
+def train(model : torch.nn.Module, dataloader : DataLoader, optimizer : torch.optim.Optimizer, cfg):
     epochs = cfg.hyperparameters.epochs
     loss_fn = torch.nn.CrossEntropyLoss()
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model.to(device)
-    
     wandb.init(
         entity="rasmusmkn-danmarks-tekniske-universitet-dtu",
         project="chess-board-recognizer",
         config={"lr": cfg.hyperparameters.lr, "batch_size": cfg.hyperparameters.batch_size, "epochs": epochs},
+        name=cfg.hyperparameters.model
     )
 
 
@@ -52,10 +52,11 @@ def train(model, dataloader, optimizer, cfg):
             running_loss += loss.item()
 
         sample_image = inputs[0].unsqueeze(0)
-        sample_label = labels[0]
+        sample_label = labels[0].argmax(dim=-1)
+        sample_prediction= model(sample_image).argmax(dim=-1)
         
-        sample_truth = draw_chessboard(sample_label.argmax(dim=-1))
-        sample_prediction = draw_chessboard(model(sample_image).argmax(dim=-1)[0])
+        sample_truth_board = draw_chessboard(sample_label)
+        sample_prediction_board = draw_chessboard(model(sample_image).argmax(dim=-1)[0])
         
         epoch_loss = running_loss / len(dataloader)
         epoch_accuracy = board_acc / len(dataloader)
@@ -63,26 +64,48 @@ def train(model, dataloader, optimizer, cfg):
             f"Epoch {epoch + 1}/{epochs} - Loss: {epoch_loss:.4f} - Accuracy: {epoch_accuracy:.4f}"
         )
         
-        wandb.log({"train_loss": loss, "train_accuracy": epoch_accuracy})
-        
-        wandb.log({"images" : {"sample": wandb.Image(sample_image),"truth": wandb.Image(sample_truth),"prediction": wandb.Image(sample_prediction)} })
+        wandb.log({
+                "sample" : {
+                    "image": wandb.Image(sample_image),
+                    "truth": wandb.Image(sample_truth_board),
+                    "prediction": wandb.Image(sample_prediction_board),
+                    "board_accuracy": board_accuracy(sample_prediction,sample_label,1),
+                    "per_piece_accuracy": per_piece_accuracy(sample_prediction,sample_label,1)
+                },
+                "train_loss": loss,
+                "train_accuracy": epoch_accuracy
+        })
+    wandb.finish(0)
 
 
-@hydra.main(version_base=None, config_path="../../configs", config_name="train.yaml")
+@hydra.main(version_base=None, config_path="../../configs", config_name="experiment_cnn.yaml")
 def main(cfg):
-    model = ResNet()
+    if cfg.hyperparameters.model == "CNN":
+        model = CNNModel()
+        transform = transforms.Compose(
+            [
+                transforms.ToTensor(),
+                transforms.Resize((128, 128)),
+            ]
+        )
+    elif cfg.hyperparameters.model == "ResNet":
+        model = ResNet()
+        transform = transforms.Compose(
+            [
+                transforms.ToTensor(),
+                transforms.Resize((224, 224)),
+            ]
+        )
+    else:
+        logger.error("Invalid network type in configuration. Available Models: CNN, ResNet")
+        raise Exception("Specified network type is invalid")
 
     if cfg.hyperparameters.optimizer == "adam":
         optimizer = torch.optim.Adam(model.parameters())
     else:
         optimizer = torch.optim.SGD(model.parameters())
 
-    transform = transforms.Compose(
-        [
-            transforms.ToTensor(),
-            transforms.Resize((128, 128)),
-        ]
-    )
+
 
     chess_dataset = ChessPositionsDataset("data/", transform=transform)
 
