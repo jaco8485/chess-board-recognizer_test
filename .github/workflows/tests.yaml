@@ -30,6 +30,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
+          pip install pytest
           pip list
 
       # Run tests and coverage, excluding test_data.py
