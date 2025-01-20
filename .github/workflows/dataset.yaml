@@ -3,7 +3,7 @@ name: Data Artifact
 on:
   push:
     branches:
-      - Unit_Test
+      - main
 
 jobs:
   create-artifact:
@@ -32,6 +32,3 @@ jobs:
           name: permanent-dataset
           path: ./data
 
-      - name: List files in data directory
-        run: |
-          ls -l ./data
