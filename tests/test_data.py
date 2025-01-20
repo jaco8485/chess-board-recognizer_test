@@ -1,6 +1,6 @@
 from torch.utils.data import Dataset
 import torchvision.transforms as transforms
-from chess_board_recognizer.data import ChessPositionsDataset
+from data import ChessPositionsDataset
 
 
 transform = transforms.Compose(
