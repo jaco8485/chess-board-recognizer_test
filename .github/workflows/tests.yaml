@@ -38,6 +38,12 @@ jobs:
           pip install torchvision
           pip list
 
+      - name: Download dataset artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: permanent-dataset
+          path: ./data
+
       # Run tests and coverage, excluding test_data.py
       - name: Run tests & coverage
         run: |
