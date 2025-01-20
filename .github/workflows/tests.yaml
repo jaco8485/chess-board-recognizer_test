@@ -1,13 +1,17 @@
 name: Unit Tests
 
 on:
-  push:
-    branches:
-      - main
-      - Unit_Test
-  pull_request:
-    branches:
-      - main
+ workflow_run:
+    workflows: ["Data Artifact"]
+    types:
+      - completed
+  # push:
+  #   branches:
+  #     - main
+  #     - Unit_Test
+  # pull_request:
+  #   branches:
+  #     - main
 
 jobs:
   test:
@@ -21,10 +25,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download dataset artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: permanent-dataset
-          path: ./data
+        run: |
+          curl -L -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          "https://api.github.com/repos/${{ github.repository }}/actions/artifacts" | \
+          jq '.artifacts[] | select(.name == "permanent-dataset") | .id' | \
+          xargs -I {} curl -L -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          -o artifact.zip "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/{}/download"
 
       - name: Run tests
         run: |

@@ -31,3 +31,7 @@ jobs:
         with:
           name: permanent-dataset
           path: ./data
+
+      - name: List files in data directory
+        run: |
+          ls -l ./data
