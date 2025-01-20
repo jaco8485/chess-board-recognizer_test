@@ -13,11 +13,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Download and prepare dataset
+      - name: Set up Python environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
+
+      - name: Install DVC
         run: |
-          mkdir -p ./data
-          curl -o ./data/dataset.zip mlops_group_10
-          unzip ./data/dataset.zip -d ./data
+          pip install dvc
+
+      - name: Pull DVC-tracked dataset
+        run: |
+          dvc pull
 
       - name: Upload dataset artifact
         uses: actions/upload-artifact@v3
