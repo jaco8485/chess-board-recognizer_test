@@ -87,7 +87,7 @@ def main(cfg):
     chess_dataset = ChessPositionsDataset("data/", transform=transform)
 
     train_loader = DataLoader(
-        chess_dataset, cfg.hyperparameters.batch_size, shuffle=True,# num_workers=cfg.hyperparameters.num_workers, persistent_workers=True
+        chess_dataset, cfg.hyperparameters.batch_size, shuffle=True, num_workers=cfg.hyperparameters.num_workers, persistent_workers=True
     )
 
     train(model, train_loader, optimizer, cfg)
