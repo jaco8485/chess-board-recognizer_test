@@ -7,7 +7,7 @@ import torchvision.transforms as transforms
 from loguru import logger
 import time
 import datetime
-from chess_board_recognizer.utils import board_accuracy
+from utils import board_accuracy
 from tqdm import tqdm
 
 
