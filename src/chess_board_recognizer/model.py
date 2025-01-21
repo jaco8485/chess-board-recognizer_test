@@ -28,6 +28,10 @@ class CNNModel(nn.Module):
         self.activation = nn.ReLU()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+
+        if x.ndim != 4:
+            raise ValueError('Expected input to a 4D tensor')
+
         x = self.conv1(x)
         x = self.pool1(x)
         x = self.activation(x)

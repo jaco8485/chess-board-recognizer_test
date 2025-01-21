@@ -1,0 +1,23 @@
+name: Create Dataset Artifact
+
+on:
+  workflow_dispatch:  # Trigger manually when needed
+
+jobs:
+  create-artifact:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download and prepare dataset
+        run: |
+          mkdir -p ./data
+          curl -o ./data/dataset.zip <your-dataset-url>
+          unzip ./data/dataset.zip -d ./data
+
+      - name: Upload dataset artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: permanent-dataset
+          path: ./data

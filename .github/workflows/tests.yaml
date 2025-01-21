@@ -1,40 +1,81 @@
-# name: Unit Tests
+name: Unit Tests
 
-# on:
-#   push:
-#     branches:
-#       - main
-#   pull_request:
-#     branches:
-#       - main
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
-# jobs:
-#   test:
-#     runs-on: ${{ matrix.operating-system }}
-#     strategy:
-#       matrix:
-#         operating-system: ["ubuntu-latest", "windows-latest", "macos-latest"]
-#         python-version: ["3.12", "3.11"]
+jobs:
+  create-artifact:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v4
+      # Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
 
-#       - name: Set up Python
-#         uses: actions/setup-python@v5
-#         with:
-#           python-version: ${{ matrix.python-version }}
-#           cache: 'pip'
-#           cache-dependency-path: setup.py
+      # Install dependencies
+      - name: Install DVC
+        run: |
+          pip install dvc
+          pip install dvc-gs
 
-#       - name: Install dependencies
-#         run: |
-#           python -m pip install -U pip setuptools wheel
-#           pip install -r requirements.txt
-#           pip list
+      # Pull DVC-tracked dataset
+      - name: Pull DVC-tracked dataset
+        run: |
+          dvc pull
 
+      # Upload dataset artifact
+      - name: Upload dataset artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: permanent-dataset
+          path: ./data
 
-#       - name: Run tests & coverage
-#         run: |
-#           coverage run -m pytest tests/
-#           coverage report -m
+  test:
+    runs-on: ${{ matrix.operating-system }}
+    needs: create-artifact
+    strategy:
+      matrix:
+        operating-system: ["windows-latest"]
+        python-version: ["3.11"]
+
+    steps:
+      # Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+          cache-dependency-path: setup.py
+
+      # Install other dependencies
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest
+          pip install numpy
+          pip install torchvision
+
+      - name: Download dataset artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: permanent-dataset
+          path: ./data
+
+      # Run tests and coverage, excluding test_data.py
+      - name: Run tests & coverage
+        run: | # "pytest tests" runs all tests in the tests directory
+          pytest tests --ignore=tests/test_data.py 
