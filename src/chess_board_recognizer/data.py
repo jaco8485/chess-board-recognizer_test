@@ -44,7 +44,7 @@ class ChessPositionsDataset(Dataset):
         self.data_paths = glob.glob(str(self.data_path / type / "*"))
 
         self.data_paths = self.data_paths
-        
+
     def __len__(self) -> int:
         return len(self.data_paths)
 
@@ -66,7 +66,7 @@ def main(data_path: str):
         ]
     )
 
-    ChessPositionsDataset(data_path=data_path,transform=transform)
+    ChessPositionsDataset(data_path=data_path, transform=transform)
 
 
 if __name__ == "__main__":

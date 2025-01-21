@@ -1,13 +1,11 @@
 import torch
 from torch.utils.data import DataLoader
 from data import ChessPositionsDataset
-from model import *
+from model import CNNModel, ResNet
 import torchvision.transforms as transforms
 from loguru import logger
-from pathlib import Path
 import typer
-from utils import board_accuracy, from_fen_notation, per_piece_accuracy
-import wandb
+from utils import board_accuracy
 from tqdm import tqdm
 
 
@@ -39,9 +37,8 @@ def evaluate(model, dataloader):
 
 
 def main(model_path: str):
-    
     model_name = model_path.split("_")[0]
-    
+
     if "CNN" in model_name:
         model = CNNModel()
         transform = transforms.Compose(
@@ -59,11 +56,11 @@ def main(model_path: str):
             ]
         )
     else:
-        raise TypeError(f"Model typer not found")
+        raise TypeError("Model typer not found")
 
     model.load_state_dict(torch.load(model_path, weights_only=True))
     model.eval()
-    
+
     chess_dataset = ChessPositionsDataset("data/", type="test", transform=transform)
 
     test_loader = DataLoader(chess_dataset, 16, shuffle=False, num_workers=8)

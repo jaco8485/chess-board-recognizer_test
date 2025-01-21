@@ -29,10 +29,9 @@ class CNNModel(nn.Module):
         self.activation = nn.ReLU()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-
         if x.ndim != 4:
             logger.error("CNNModel input was not a 4D Tensor")
-            raise ValueError('Expected input to a 4D tensor')
+            raise ValueError("Expected input to a 4D tensor")
 
         x = self.conv1(x)
         x = self.pool1(x)
@@ -59,25 +58,28 @@ class CNNModel(nn.Module):
 
         return x
 
+
 class ResNet(nn.Module):
     """
     Simple CNN model. Takes in images of 128x128.
     """
+
     def __init__(self) -> nn.Module:
         super().__init__()
-        
-        self.model = timm.create_model("resnet18",pretrained=True,num_classes=8*8*13)
+
+        self.model = timm.create_model("resnet18", pretrained=True, num_classes=8 * 8 * 13)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         if x.ndim != 4:
             logger.error("ResNet input was not a 4D Tensor")
-            raise ValueError('Expected input to a 4D tensor')
-        
+            raise ValueError("Expected input to a 4D tensor")
+
         x = self.model(x)
-        
-        x = x.view(-1,8,8,13)
+
+        x = x.view(-1, 8, 8, 13)
 
         return x
+
 
 if __name__ == "__main__":
     model = CNNModel()

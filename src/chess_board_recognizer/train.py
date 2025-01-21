@@ -13,13 +13,12 @@ import wandb
 import os
 
 
-
-def train(model : torch.nn.Module, dataloader : DataLoader, optimizer : torch.optim.Optimizer, cfg):
+def train(model: torch.nn.Module, dataloader: DataLoader, optimizer: torch.optim.Optimizer, cfg):
     epochs = cfg.hyperparameters.epochs
     loss_fn = torch.nn.CrossEntropyLoss()
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model.to(device)
-    
+
     logger.info("Starting training:")
     logger.info(f"Model: {type(model).__name__}")
     logger.info(f"Device: {device}")
@@ -27,15 +26,17 @@ def train(model : torch.nn.Module, dataloader : DataLoader, optimizer : torch.op
     logger.info(f"Learning Rate: {cfg.hyperparameters.lr}")
     logger.info(f"Total Epochs: {cfg.hyperparameters.epochs}")
     logger.info(f"Optimizer: {type(optimizer).__name__}")
-    
-    
+
     wandb.init(
         entity="rasmusmkn-danmarks-tekniske-universitet-dtu",
         project="chess-board-recognizer",
-        config={"lr": cfg.hyperparameters.lr, "batch_size": cfg.hyperparameters.batch_size, "epochs": cfg.hyperparameters.epochs},
-        name=f"{cfg.hyperparameters.model}-train"
+        config={
+            "lr": cfg.hyperparameters.lr,
+            "batch_size": cfg.hyperparameters.batch_size,
+            "epochs": cfg.hyperparameters.epochs,
+        },
+        name=f"{cfg.hyperparameters.model}-train",
     )
-
 
     for epoch in range(epochs):
         model.train()
@@ -63,37 +64,36 @@ def train(model : torch.nn.Module, dataloader : DataLoader, optimizer : torch.op
 
         sample_image = inputs[0].unsqueeze(0)
         sample_label = labels[0].argmax(dim=-1)
-        sample_prediction= model(sample_image).argmax(dim=-1)[0]
-        
+        sample_prediction = model(sample_image).argmax(dim=-1)[0]
+
         sample_truth_board = draw_chessboard(sample_label)
         sample_prediction_board = draw_chessboard(model(sample_image).argmax(dim=-1)[0])
-        
+
         epoch_loss = running_loss / len(dataloader)
         epoch_accuracy = board_acc / len(dataloader)
-        logger.info(
-            f"Epoch {epoch + 1}/{epochs} - Loss: {epoch_loss:.4f} - Accuracy: {epoch_accuracy:.4f}"
-        )
-        
-        wandb.log({
-                "sample" : {
+        logger.info(f"Epoch {epoch + 1}/{epochs} - Loss: {epoch_loss:.4f} - Accuracy: {epoch_accuracy:.4f}")
+
+        wandb.log(
+            {
+                "sample": {
                     "image": wandb.Image(sample_image),
                     "truth": wandb.Image(sample_truth_board),
                     "prediction": wandb.Image(sample_prediction_board),
-                    "board_accuracy": board_accuracy(sample_prediction,sample_label),
-                    "per_piece_accuracy": per_piece_accuracy(sample_prediction,sample_label)
+                    "board_accuracy": board_accuracy(sample_prediction, sample_label),
+                    "per_piece_accuracy": per_piece_accuracy(sample_prediction, sample_label),
                 },
                 "train_loss": loss,
-                "train_accuracy": epoch_accuracy
-        })
+                "train_accuracy": epoch_accuracy,
+            }
+        )
     wandb.finish(0)
 
 
 @hydra.main(version_base=None, config_path="../../configs", config_name="experiment_cnn.yaml")
 def main(cfg):
-    
     # Loguru doesn't output to the hydra log file by default.
-    logger.add(os.path.join(hydra.core.hydra_config.HydraConfig.get().runtime.output_dir,"train.log"))
-    
+    logger.add(os.path.join(hydra.core.hydra_config.HydraConfig.get().runtime.output_dir, "train.log"))
+
     if cfg.hyperparameters.model == "CNN":
         model = CNNModel()
         transform = transforms.Compose(
@@ -121,13 +121,10 @@ def main(cfg):
     else:
         logger.warning("Invalid optimizer chosen, defaulting to adam")
         optimizer = torch.optim.Adam(model.parameters())
-    
 
     chess_dataset = ChessPositionsDataset("data/", transform=transform)
 
-    train_loader = DataLoader(
-        chess_dataset, cfg.hyperparameters.batch_size, shuffle=True, num_workers=0
-    )
+    train_loader = DataLoader(chess_dataset, cfg.hyperparameters.batch_size, shuffle=True, num_workers=0)
 
     train(model, train_loader, optimizer, cfg)
 
