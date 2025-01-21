@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import timm
+from loguru import logger
 
 
 class CNNModel(nn.Module):
@@ -30,6 +31,7 @@ class CNNModel(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
 
         if x.ndim != 4:
+            logger.error("CNNModel input was not a 4D Tensor")
             raise ValueError('Expected input to a 4D tensor')
 
         x = self.conv1(x)
@@ -67,6 +69,10 @@ class ResNet(nn.Module):
         self.model = timm.create_model("resnet18",pretrained=True,num_classes=8*8*13)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        if x.ndim != 4:
+            logger.error("ResNet input was not a 4D Tensor")
+            raise ValueError('Expected input to a 4D tensor')
+        
         x = self.model(x)
         
         x = x.view(-1,8,8,13)

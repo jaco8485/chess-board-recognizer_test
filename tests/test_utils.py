@@ -315,8 +315,7 @@ def test_from_fen_notation_empty_fen():
 def test_board_accuracy_empty_borads():
     board_one = torch.zeros((8, 8, 13))
     board_two = torch.zeros((8, 8, 13))
-    batch_size = 1
-    assert utils.board_accuracy(torch.argmax(board_one, dim=-1), torch.argmax(board_two, dim=-1), batch_size) == 1
+    assert utils.board_accuracy(torch.argmax(board_one, dim=-1), torch.argmax(board_two, dim=-1)) == 1
 
 # def test_board_accuracy_empty_borads_one_hot():
 #     board_one = torch.zeros((8, 8, 13))
@@ -327,12 +326,10 @@ def test_board_accuracy_empty_borads():
 def test_board_accuracy_diffrent_boards():
     board_one = utils.from_fen_notation("1b1B1b2-2pK2q1-4p1rB-7k-8-8-3B4-3rb3")
     board_two = utils.from_fen_notation("1b1B2n1-3K1PN1-B6N-3k1B2-5p2-8-1B3q2-r1b5")
-    batch_size = 1
-    assert utils.board_accuracy(torch.argmax(board_one,dim=-1), torch.argmax(board_two,dim=-1), batch_size) == 0.6875
+    assert utils.board_accuracy(torch.argmax(board_one,dim=-1), torch.argmax(board_two,dim=-1)) == 0.6875
 
 def test_board_accuracy_invalid_borads():
     board_one = torch.zeros((8, 8, 13))
     board_two = torch.ones((9, 9, 13))
-    batch_size = 1
-    with pytest.raises(RuntimeError):
-        utils.board_accuracy(torch.argmax(board_one,dim=-1), torch.argmax(board_two,dim=-1), batch_size)
+    with pytest.raises(ValueError):
+        utils.board_accuracy(torch.argmax(board_one,dim=-1), torch.argmax(board_two,dim=-1))

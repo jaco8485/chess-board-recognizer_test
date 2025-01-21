@@ -26,9 +26,9 @@ def main(model_path: Path, image_path: Path):
 
     prediction = model(image).argmax(dim=-1).squeeze(0)
 
-    logger.info(f"Board Accuracy: {board_accuracy(prediction, truth, 1) * 100:.2f}%")
+    logger.info(f"Board Accuracy: {board_accuracy(prediction, truth) * 100:.2f}%")
 
-    piece_acc = per_piece_accuracy(prediction, truth, 1)
+    piece_acc = per_piece_accuracy(prediction, truth)
 
     logger.info("Per piece accuracy:")
 
