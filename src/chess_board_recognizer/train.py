@@ -13,7 +13,7 @@ import wandb
 import os
 
 
-def train(model: torch.nn.Module, dataloader: DataLoader, optimizer: torch.optim.Optimizer, cfg):
+def train(model: torch.nn.Module, dataloader: DataLoader, optimizer: torch.optim.Optimizer, cfg, disable_wandb = False):
     epochs = cfg.hyperparameters.epochs
     loss_fn = torch.nn.CrossEntropyLoss()
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -27,16 +27,17 @@ def train(model: torch.nn.Module, dataloader: DataLoader, optimizer: torch.optim
     logger.info(f"Total Epochs: {cfg.hyperparameters.epochs}")
     logger.info(f"Optimizer: {type(optimizer).__name__}")
 
-    wandb.init(
-        entity="rasmusmkn-danmarks-tekniske-universitet-dtu",
-        project="chess-board-recognizer",
-        config={
-            "lr": cfg.hyperparameters.lr,
-            "batch_size": cfg.hyperparameters.batch_size,
-            "epochs": cfg.hyperparameters.epochs,
-        },
-        name=f"{cfg.hyperparameters.model}-train",
-    )
+    if not disable_wandb:
+        wandb.init(
+            entity="rasmusmkn-danmarks-tekniske-universitet-dtu",
+            project="chess-board-recognizer",
+            config={
+                "lr": cfg.hyperparameters.lr,
+                "batch_size": cfg.hyperparameters.batch_size,
+                "epochs": cfg.hyperparameters.epochs,
+            },
+            name=f"{cfg.hyperparameters.model}-train",
+        )
 
     for epoch in range(epochs):
         model.train()
@@ -73,20 +74,22 @@ def train(model: torch.nn.Module, dataloader: DataLoader, optimizer: torch.optim
         epoch_accuracy = board_acc / len(dataloader)
         logger.info(f"Epoch {epoch + 1}/{epochs} - Loss: {epoch_loss:.4f} - Accuracy: {epoch_accuracy:.4f}")
 
-        wandb.log(
-            {
-                "sample": {
-                    "image": wandb.Image(sample_image),
-                    "truth": wandb.Image(sample_truth_board),
-                    "prediction": wandb.Image(sample_prediction_board),
-                    "board_accuracy": board_accuracy(sample_prediction, sample_label),
-                    "per_piece_accuracy": per_piece_accuracy(sample_prediction, sample_label),
-                },
-                "train_loss": loss,
-                "train_accuracy": epoch_accuracy,
-            }
-        )
-    wandb.finish(0)
+        if not disable_wandb:
+            wandb.log(
+                {
+                    "sample": {
+                        "image": wandb.Image(sample_image),
+                        "truth": wandb.Image(sample_truth_board),
+                        "prediction": wandb.Image(sample_prediction_board),
+                        "board_accuracy": board_accuracy(sample_prediction, sample_label),
+                        "per_piece_accuracy": per_piece_accuracy(sample_prediction, sample_label),
+                    },
+                    "train_loss": loss,
+                    "train_accuracy": epoch_accuracy,
+                }
+            )
+    if not disable_wandb:
+        wandb.finish(0)
 
 
 @hydra.main(version_base=None, config_path="../../configs", config_name="experiment_cnn.yaml")
@@ -124,9 +127,9 @@ def main(cfg):
 
     chess_dataset = ChessPositionsDataset("data/", transform=transform)
 
-    train_loader = DataLoader(chess_dataset, cfg.hyperparameters.batch_size, shuffle=True, num_workers=0)
+    train_loader = DataLoader(chess_dataset, cfg.hyperparameters.batch_size, shuffle=True, num_workers=cfg.hyperparameters.num_workers, persistent_workers=True)
 
-    train(model, train_loader, optimizer, cfg)
+    train(model, train_loader, optimizer, cfg,disable_wandb=False)
 
     torch.save(
         model.state_dict(),
