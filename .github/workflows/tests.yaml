@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - Unit_Test # remove this line
   pull_request:
     branches:
       - main
@@ -13,23 +12,28 @@ jobs:
   create-artifact:
     runs-on: ubuntu-latest
     steps:
+      # Checkout the code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python environment
+      # Set up Python
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: 3.8
 
+      # Install dependencies
       - name: Install DVC
         run: |
           pip install dvc
           pip install dvc-gs
 
+      # Pull DVC-tracked dataset
       - name: Pull DVC-tracked dataset
         run: |
           dvc pull
 
+      # Upload dataset artifact
       - name: Upload dataset artifact
         uses: actions/upload-artifact@v4
         with:
