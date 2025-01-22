@@ -41,7 +41,7 @@ jobs:
     needs: create-artifact
     strategy:
       matrix:
-        operating-system: ["windows-latest"]
+        operating-system: ["windows-latest", "ubuntu-latest", "macos-latest"]
         python-version: ["3.11", "3.12"]
 
     steps:
