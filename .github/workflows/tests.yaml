@@ -3,7 +3,11 @@ name: Unit Tests
 on:
   push:
     branches:
-      - Unit_Test
+      - main
+      - Unit_Test # remove this line
+  pull_request:
+    branches:
+      - main
 
 jobs:
   create-artifact:
@@ -32,13 +36,13 @@ jobs:
           name: permanent-dataset
           path: ./data
 
-  test_setup:
+  test:
     runs-on: ${{ matrix.operating-system }}
     needs: create-artifact
     strategy:
       matrix:
         operating-system: ["windows-latest"]
-        python-version: ["3.11"]
+        python-version: ["3.11", "3.12"]
 
     steps:
       # Checkout the code
@@ -60,7 +64,6 @@ jobs:
           pip install pytest
           pip install numpy
           pip install torchvision
-          pip list
 
       - name: Download dataset artifact
         uses: actions/download-artifact@v4
@@ -70,5 +73,5 @@ jobs:
 
       # Run tests and coverage, excluding test_data.py
       - name: Run tests & coverage
-        run: |
-          pytest tests
+        run: | # "pytest tests" runs all tests in the tests directory
+          pytest tests --ignore=tests/test_data.py 
